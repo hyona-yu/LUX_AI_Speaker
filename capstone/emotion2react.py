@@ -33,7 +33,7 @@ class emotion_to_ans():
         else:
         	self.get_method = random.randrange(0,3)
         	
-        self.get_method = 0
+        #self.get_method = 0
 
         if self.get_method ==0:
             self.method_mp3(self.emotion)
