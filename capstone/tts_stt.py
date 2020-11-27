@@ -1,6 +1,7 @@
 #### TTS ####
 #pip3 install --upgrade google-cloud-texttospeech
-#extract GOOGLE_APPLICATION_CREDENTIALS = "impactful-post-296307-1929e49da366.json"
+#export GOOGLE_APPLICATION_CREDENTIALS="impactful-post-296307-1929e49da366.json"
+
 
 
 #### SST ####
@@ -29,9 +30,10 @@ def STT(file_path, rate = 16000):
 	response = client.recognize(config = config, audio = audio)
 	for result in response.results:
 		print(result.alternatives[0].transcript)
+		return result.alternatives[0].transcript
 	
-
+##이런식으로 함수 불러오면 됩니다 찡긋!
 if __name__ == '__main__':
-	STT('./audio_stt_tts/3_emotion_status.wav', 24000)
-	#TTS('화가 나셨군요', './audio_stt_tts/0_emotion_status.wav')
+	#text = STT('./audio_stt_tts/3_emotion_status.wav', 24000)
+	#TTS('럭스한테 여기서 뭐라고 말을 하겠지?', 'audio_stt_tts/user_says/say.wav')
 

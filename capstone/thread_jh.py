@@ -1,7 +1,7 @@
 import threading
 import pyaudio
 import numpy as np
-import matplotlib.pyplot as plt
+
 import wave
 import time
 import sys
@@ -9,7 +9,9 @@ import queue
 global bf_data
 global sample
 import six
-##이거슨 스레드이다. 나중에 음성 받을 때 쓸 아이이다. 아직 tts함수는 불러오지 않았다.
+from tts_stt import * 
+##이거슨 스레드이다. 나중에 음성 받을 때 쓸 아이이다. wav 파일 안바꿈
+#배씨아저씨 코드 기반. 
 class isLUX():
     def __init__(self):
         self.lock = threading.Lock()
@@ -75,15 +77,14 @@ def recording_aftLUX():
     stream.stop_stream()
     stream.close()
     p.terminate()
-    wf = wave.open('say_something.wav', 'wb')
-    wf.setnchannels(1)
-    wf.setsampwidth(p.get_sample_size(FORMAT))
-    wf.setframerate(RATE)
-    wf.writeframes(b''.join(np.array(sample)))#(b''.join(six.int2byte(sample)))
-    wf.close()
+    ##여기에 wav 파일 만드는 함수 써주시면 무한한 감사! 
+    #v파일명도 친절히 알려드림!
+    #('./audio_stt_tts/user_says/say.wav')
+    #
+	
 
 def queueing_aftLUX():
-    max_size = 64000
+    max_size = 16000 * 4 #4초
     q = queue.Queue(max_size)
     # Queue 초기화
     for i in range(1,max_size):
@@ -107,17 +108,20 @@ def queueing_aftLUX():
         q.put(data)
         sample = (q.queue)
 
-t1 = threading.Thread(target = recording_aftLUX)
-t2 = threading.Thread(target = queueing_aftLUX)
-t1.start()
-t2.start()
+def go_thread():
+	t1 = threading.Thread(target = recording_aftLUX) 
+	t2 = threading.Thread(target = queueing_aftLUX)
+	t1.start()
+	t2.start()
 
-mainThread = threading.currentThread()
-for thread in threading.enumerate():
-    # Main Thread를 제외한 모든 Thread들이
-    # 카운팅을 완료하고 끝날 때 까지 기다린다.
-    if thread is not mainThread:
-        thread.join()
+	mainThread = threading.currentThread()
+	for thread in threading.enumerate():
+    	# Main Thread를 제외한 모든 Thread들이
+    	# 카운팅을 완료하고 끝날 때 까지 기다린다.
+    		if thread is not mainThread:
+        		thread.join()
 
-print('sample:', np.array(sample).tobytes())
+	print('sample:', np.array(sample).tobytes())
 #print('buffer:', bf_data)
+
+

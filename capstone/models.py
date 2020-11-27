@@ -16,6 +16,7 @@ import json
 #####  리눅스 최종 version  #####  
 ### tensorflow version: 1.15.2, tensorflow_hub version : 0.10.0 (걍 깔면 이거 됨), keras 2.3.1
 ### h5py version 2.10.0
+#이거 서버에 올린거니깐 신경 ㄴㄴ
 class ELMO():
   def __init__(self):
     self.elmo = hub.Module("https://tfhub.dev/google/elmo/1", trainable=True)
