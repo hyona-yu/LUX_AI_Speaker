@@ -1,4 +1,4 @@
-import pygame
+import playsound
 import random
 import os
 import pandas as pd
@@ -54,18 +54,8 @@ class emotion_to_ans():
     		if p.split('_')[0] == str(emotion):
     			emotion_mp3.append(p)
     	idx = random.randrange(0, len(emotion_mp3))
-    	freq = 44100    # sampling rate, 44100(CD), 16000(Naver TTS), 24000(google TTS)
-    	bitsize = -16   # signed 16 bit. support 8,-8,16,-16
-    	channels = 1    # 1 is mono, 2 is stere
-    	buffer = 4096   # number of samples (experiment to get right sound)
-    	print(os.path.join(mp3_path , emotion_mp3[idx]))
-    	pygame.mixer.init(freq, bitsize, channels, buffer=4096)
-    	pygame.mixer.music.load(os.path.join(mp3_path , emotion_mp3[idx]))
-    	pygame.mixer.music.play()
-    	clock = pygame.time.Clock()
-    	while pygame.mixer.music.get_busy():
-    		clock.tick(10)
-    		pygame.mixer.quit()
+	playsound(mp3_path + emotion_mp3[idx])
+    	
         
 
 
