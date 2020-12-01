@@ -34,6 +34,6 @@ def STT(file_path, rate = 16000):
 	
 ##이런식으로 함수 불러오면 됩니다 찡긋!
 if __name__ == '__main__':
-	#text = STT('./audio_stt_tts/3_emotion_status.wav', 24000)
+	text = STT('./audio_stt_tts/3_emotion_status.wav', 24000)
 	#TTS('럭스한테 여기서 뭐라고 말을 하겠지?', 'audio_stt_tts/user_says/say.wav')
 
