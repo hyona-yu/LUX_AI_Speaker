@@ -13,7 +13,7 @@ from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 import re
 import json
-#####  리눅스 최종 version  #####  
+#####  리눅스 최종 version  #####
 ### tensorflow version: 1.15.2, tensorflow_hub version : 0.10.0 (걍 깔면 이거 됨), keras 2.3.1
 ### h5py version 2.10.0
 #이거 서버에 올린거니깐 신경 ㄴㄴ
@@ -60,8 +60,8 @@ class GRU_model():
     def __init__(self):
         self.max_len = 8
         self.okt = Okt()
-        self.num_words = 8709
-        self.tokenizer = Tokenizer(num_words = self.num_words + 1)
+        self.num_words = 15799
+        self.tokenizer = Tokenizer(num_words = self.num_words)
         with open('./params/base_wordIndex.json') as json_file:
             word_index = json.load(json_file)
             self.tokenizer.word_index = word_index
@@ -89,7 +89,6 @@ class predict():
         self.elmo = ELMO()
         self.base_model = self.gru.base_model()
         self.loaded_model = self.elmo.elmo_model()
-        self.train_loaded_model = self.elmo.elmo_model_2()
 
 
     def predict_base(self, new_sentence):
@@ -104,26 +103,22 @@ class predict():
         new_sen = self.elmo.tokenize(data)
         pred = self.loaded_model.predict(np.array(new_sen))
         return pred
-    def predict_train_elmo(self, new_sentence):
-        data = [new_sentence, '']
-        new_sen = self.elmo.tokenize(data)
-        pred = self.train_loaded_model.predict(np.array(new_sen))
-        return pred
 
-    def soft_voting_ensemble(self, p1, p2, p3):
-        return p1 + p2 + p3
+    def soft_voting_ensemble(self, p1, p2):
+        return p1 + p2
 
     def predict(self, new_sentence):
         pred = self.predict_elmo(new_sentence)
         pred_base = self.predict_base(new_sentence)
         pred_train_elmo = self.predict_train_elmo(new_sentence)
 
-        if np.max(pred[0])>=0.6:
-            return np.argmax(pred[0]), np.max(pred[0])
+        if np.max(pred_base[0])>=0.3:
+            return np.argmax(pred_base[0]), np.max(pred_base[0])
             #print('%.2f'%(np.max(pred[0])*100) +'% 의 확률로 ',emotion_dic[np.argmax(pred[0])])
+
         else:
-            voting_pred = self.soft_voting_ensemble(pred[0], pred_train_elmo[0], pred_base)
-            return np.argmax(voting_pred[0]), np.max(voting_pred[0])*100/3
+            voting_pred = self.soft_voting_ensemble(pred_train_elmo[0], pred_base)
+            return np.argmax(voting_pred[0]), np.max(voting_pred[0])/2
             #print('%.2f'%(np.max(voting_pred[0])*100/3) +'% 의 확률로 ',emotion_dic[np.argmax(voting_pred[0])])
 
 
